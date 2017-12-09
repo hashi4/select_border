@@ -32,7 +32,7 @@ namespace SelectBorder
         // 頂点一覧
         private static IList<IPXVertex> all_vertex_list;
 #if IGNORE_NEAR
-        // 素材に含まれる頂点の位置(X -> Y -> Z)でソート
+        // 素材に含まれる頂点の位置(Y -> Z -> X)でソート
         private static int[] sorted_v;
         private static Dictionary<int, int> reverse_v;
 #endif
@@ -94,18 +94,27 @@ namespace SelectBorder
 #if IGNORE_NEAR
         private static int checkNear(int vertex) {
             int index = reverse_v[vertex];
-            if (index < sorted_v.Length - 1) {
+            while (index < sorted_v.Length - 1) {
+                index++;
                 PEPlugin.SDX.V3 sub_next = 
                     all_vertex_list[vertex].Position -
-                    all_vertex_list[sorted_v[index + 1]].Position;
+                    all_vertex_list[sorted_v[index]].Position;
+                if (sub_next.Y * sub_next.Y >= NEAR * NEAR) {
+                    break;
+                }
                 if (norm2(sub_next) < NEAR * NEAR) {
                     return index + 1;
                 }
             }
-            if (index > 1) {
+            index = reverse_v[vertex];
+            while (index > 1) {
+                index --;
                 PEPlugin.SDX.V3 sub_before =
                     all_vertex_list[vertex].Position -
-                    all_vertex_list[sorted_v[index - 1]].Position;
+                    all_vertex_list[sorted_v[index]].Position;
+                if (sub_before.Y * sub_before.Y >= NEAR * NEAR) {
+                    break;
+                }
                 if (norm2(sub_before) < NEAR * NEAR) {
                     return index - 1;
                 }
@@ -117,9 +126,9 @@ namespace SelectBorder
         private static Tuple<int[], Dictionary<int, int>> sortVertexList(
                 int[] vertex_list) {
             IEnumerable<int> q = vertex_list.OrderBy(
-                v => all_vertex_list[v].Position.X).ThenBy(
                 v => all_vertex_list[v].Position.Y).ThenBy(
-                v => all_vertex_list[v].Position.Z);
+                v => all_vertex_list[v].Position.Z).ThenBy(
+                v => all_vertex_list[v].Position.X);
             int[] s = q.ToArray();
             Dictionary<int, int> r = new Dictionary<int, int>();
             for (int i = 0; i < s.Length; i++) {
