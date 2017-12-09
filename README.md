@@ -35,6 +35,7 @@ C#もプラグインの仕組みも手探りで調べながら作ったので、
     * 21, 22行目、コメント指定を消すと、同じ材質中に距離が近い頂点がある場合は境界と見做さないようにします(「近接無視」)
         * `@rem @set OPT2=/define:IGNORE_NEAR`
         * `@rem @set TARGET=%TARGET%_opt2`
+        * インチキ実装なためモデルによっては機能しません、いずれ直したいと思います
     * 23行目、コメント指定を消すと、頂点選択結果を「選択オブジェクトの記憶」5番目に記憶します  
         * `@rem @set OPT3=/define:USE_MEM_SLOT`
 * ビルド実行、インストール
@@ -44,20 +45,20 @@ C#もプラグインの仕組みも手探りで調べながら作ったので、
 つみだんごさん作「[静謐のハサン](http://www.nicovideo.jp/watch/sm30734215)」をお借りして説明します。  
 もしかしたらバージョンが上がっていて頂点番号とか違っているかもしれません。
 * まず材質を選択します  
-![材質選択](./images/proc1.png)
+![材質選択](https://user-images.githubusercontent.com/16065740/33794317-f55be0b4-dd0c-11e7-8906-5be09b9b55cd.png)
 * プラグインを実行します  
 プラグインの名称はビルド時のオプション指定に応じて変わります
-![プラグイン実行](./images/proc2.png)
+![プラグイン実行](https://user-images.githubusercontent.com/16065740/33794323-36bd77b6-dd0d-11e7-887d-13734a33e0f7.png)
 * その材質に含まれる面の境界頂点がPmxView上で選択状態になります
 * ビルド時に記憶オプションを有効にしていると「選択オブジェクトの記憶」5番目に記憶します
-![実行(接続)](./images/link.png)
+![実行(接続)](https://user-images.githubusercontent.com/16065740/33794327-5b51eabc-dd0d-11e7-98a5-890bcdfb78cb.png)
 * 位置判定+近接無視の場合は以下です
-![位置+近接無視](./images/pos_ig_near.png)
+![位置+近接無視](https://user-images.githubusercontent.com/16065740/33794335-8472d79e-dd0d-11e7-85bc-1b625723b9a4.png)
 * PmxView上で頂点を選択してからプラグインを実行すると
-![頂点限定](./images/proc3.png)
+![頂点限定](https://user-images.githubusercontent.com/16065740/33794339-a63b02fc-dd0d-11e7-8d09-02f4ada8bc73.png)
 * 選んだ頂点の内、材質に含まれ且つ境界である頂点を起点として、面で繋がっている境界頂点を選択状態にします  
 左胸を切り取りとった所は面が繋がっていないみたいですね
-![選択後実行(接続)](./images/link_subset.png)
+![選択後実行(接続)](https://user-images.githubusercontent.com/16065740/33794340-babfd784-dd0d-11e7-8b12-e705570bad3d.png)
 
 ## 境界の判定方法
 判定は以下2種類で、成立時は境界では「ない」と判断します。  
@@ -71,15 +72,15 @@ C#もプラグインの仕組みも手探りで調べながら作ったので、
 例えば下図(黒文字は頂点番号、白文字は面番号)において、1.方式の場合は頂点14429を境界と判定します。  
 頂点11586と17167とは同じ位置にあるものの別頂点であり、ループしていないためです。  
 2.方式では面を構成する頂点の位置を判定に用い、頂点番号を見ないので、境界ではないと判定します。
-![境界判定](./images/border_desc.png)
-![頂点](./images/border_v.png)
-![面](./images/border_f.png)
+![境界判定](https://user-images.githubusercontent.com/16065740/33794342-cdd71922-dd0d-11e7-99d1-15ca367bc506.png)
+![頂点](https://user-images.githubusercontent.com/16065740/33794345-e04f0920-dd0d-11e7-8864-600ac226f428.png)
+![面](https://user-images.githubusercontent.com/16065740/33794348-ecc9cd48-dd0d-11e7-83cb-7792e36dfd3f.png)
 
 ## 近接頂点無視による違いの例
 * 位置判定のみの場合
-![足位置](./images/pos_feet.png)
+![足位置](https://user-images.githubusercontent.com/16065740/33794353-fe554754-dd0d-11e7-968a-3d9cb09a3566.png)
 
 * 位置判定+近接無視の場合、〇を付けている頂点に注意です
-![足位置+近接無視](./images/pos_feet_ig_near.png)
+![足位置+近接無視](https://user-images.githubusercontent.com/16065740/33794354-0a72e276-dd0e-11e7-9032-a49eef6f1dea.png)
 
 何かのお役に立てば。
